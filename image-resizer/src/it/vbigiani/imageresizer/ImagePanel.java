@@ -16,6 +16,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
@@ -74,10 +75,20 @@ public class ImagePanel extends JComponent implements MouseListener, MouseMotion
 	public BufferedImage getImage() {
 		return image;
 	}
-
+	
 	public void loadImage(File file) {
 		try {
 			image = ImageIO.read(file);
+			sizeChanged();
+		} catch (Exception e) {
+			Toolkit.getDefaultToolkit().beep();
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		}
+	}
+
+	public void loadImage(URL url) {
+		try {
+			image = ImageIO.read(url.openStream());
 			sizeChanged();
 		} catch (Exception e) {
 			Toolkit.getDefaultToolkit().beep();

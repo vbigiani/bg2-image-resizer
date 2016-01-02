@@ -14,6 +14,8 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.regex.Pattern;
 
 import javax.swing.JComboBox;
@@ -30,7 +32,7 @@ public class ImageEditor extends JFrame implements ActionListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Button loadb = new Button("Load");
+	private Button loadb = new Button("Load Local");
 	private Button saveb = new Button("Save");
 	private FileDialog fd = new FileDialog(this, "Choose an image file", FileDialog.LOAD);
 	private FileDialog fd2 = new FileDialog(this, "Save the image", FileDialog.SAVE);
@@ -42,11 +44,12 @@ public class ImageEditor extends JFrame implements ActionListener {
 	private final JLabel lblNewLabel_3 = new JLabel("Large Size");
 	private final JTextField[][] values = new JTextField[3][];
 	private JScrollPane scrollFrame;
+	private final Button btnLoadUrl = new Button("Load URL");
 
 	public ImageEditor() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 1.0};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0};
 		getContentPane().setLayout(gridBagLayout);
 		
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
@@ -121,19 +124,26 @@ public class ImageEditor extends JFrame implements ActionListener {
 		scrollFrame = new JScrollPane(id);
 		getContentPane().add(scrollFrame, gbc_ip);
 		
+		GridBagConstraints gbc_btnLoadUrl = new GridBagConstraints();
+		gbc_btnLoadUrl.insets = new Insets(0, 0, 5, 5);
+		gbc_btnLoadUrl.gridx = 0;
+		gbc_btnLoadUrl.gridy = 5;
+		getContentPane().add(btnLoadUrl, gbc_btnLoadUrl);
+		btnLoadUrl.addActionListener(this);
+		
 		GridBagConstraints gbc_loadb = new GridBagConstraints();
 		gbc_loadb.anchor = GridBagConstraints.EAST;
 		gbc_loadb.insets = new Insets(0, 0, 0, 5);
 		gbc_loadb.gridx = 0;
-		gbc_loadb.gridy = 5;
+		gbc_loadb.gridy = 6;
 		getContentPane().add(loadb, gbc_loadb);
 		loadb.addActionListener(this);
 		
 		GridBagConstraints gbc_saveb = new GridBagConstraints();
+		gbc_saveb.anchor = GridBagConstraints.WEST;
 		gbc_saveb.insets = new Insets(0, 0, 0, 5);
-		gbc_saveb.fill = GridBagConstraints.HORIZONTAL;
 		gbc_saveb.gridx = 1;
-		gbc_saveb.gridy = 5;
+		gbc_saveb.gridy = 6;
 		getContentPane().add(saveb, gbc_saveb);
 		saveb.addActionListener(this);
 		
@@ -167,6 +177,14 @@ public class ImageEditor extends JFrame implements ActionListener {
 			}
 		} else if (e.getSource() == loadb) {
 			load();
+		} else if (e.getSource() == btnLoadUrl) {
+			String url = JOptionPane.showInputDialog(this, "URL: ");
+			try {
+				id.loadImage(new URL(url));
+			} catch (MalformedURLException ex) {
+				Toolkit.getDefaultToolkit().beep();
+				JOptionPane.showMessageDialog(null, ex.getMessage());
+			}
 		} else if (e.getSource() == comboBox) {
 			GameType gt = (GameType) comboBox.getSelectedItem();
 			for (int i = 0; i < values.length; i++) {
