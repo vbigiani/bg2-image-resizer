@@ -26,6 +26,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import net.sf.image4j.codec.bmp.BMPEncoder;
+import net.sf.image4j.io.LittleEndianOutputStream;
+import net.sf.image4j.util.ConvertUtil;
 
 public class ImageEditor extends JFrame implements ActionListener {
 	/**
@@ -219,8 +221,10 @@ public class ImageEditor extends JFrame implements ActionListener {
 			g.drawImage(image, 0, 0, width, height, null);
 			g.dispose();
 			FileOutputStream fos = new FileOutputStream(file);
-			BMPEncoder.write(resizedImage, fos);
+//			LittleEndianOutputStream leos = new LittleEndianOutputStream(fos);
+			BMPEncoder.write(ConvertUtil.convert24(resizedImage), fos);
 			fos.close();
+//			leos.close();
 		} catch (Exception e) {
 			Toolkit.getDefaultToolkit().beep();
 			JOptionPane.showMessageDialog(null, e.getMessage());
